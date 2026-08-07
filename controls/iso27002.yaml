@@ -1,3 +1,6 @@
+# ISO 27002:2022 — Guidance (supplements 27001)
+# See docs/controls.md
+
 framework: iso27002
 version: "2022"
 controls:

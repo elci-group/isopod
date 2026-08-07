@@ -1,3 +1,6 @@
+//! Remediation — Advisory / Assisted / Autonomous playbooks.
+//! See `docs/controls.md`.
+
 use crate::control::ControlResult;
 use serde::{Deserialize, Serialize};
 

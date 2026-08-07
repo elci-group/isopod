@@ -1,3 +1,9 @@
+# ISO 27001:2022 — Information Security Management
+# Isopod control pack. Each control maps to evidence, evaluation, and remediation.
+# See docs/controls.md for authoring new packs.
+# Evaluation: UNKNOWN (no evidence), FAIL (confidence <0.5), WARN (<0.75 or stale), PASS.
+# Severity: missing → FAIL, degraded → WARN/UNKNOWN.
+
 framework: iso27001
 version: "2022"
 controls:

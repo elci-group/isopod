@@ -1,3 +1,6 @@
+//! HTTP API — Axum router for health, compliance, evidence, drift.
+//! See `docs/api.md`.
+
 use crate::store::Store;
 use axum::{extract::State, routing::get, Json, Router};
 use serde_json::json;

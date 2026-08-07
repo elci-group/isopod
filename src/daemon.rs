@@ -1,3 +1,6 @@
+//! Daemon — single `tick` evaluation and `run_forever` loop.
+//! See `docs/architecture.md` and `docs/operations.md`.
+
 use crate::config::Config;
 use crate::control::ControlSet;
 use crate::evidence::{ArtifactType, Evidence};

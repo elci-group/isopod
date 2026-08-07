@@ -1,3 +1,6 @@
+//! Style — TTY-aware ANSI helpers for stylised CLI output.
+//! Honours `NO_COLOR` and `is_terminal()`. No external colour crate.
+
 use crate::control::ControlStatus;
 use std::io::IsTerminal;
 

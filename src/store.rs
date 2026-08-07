@@ -1,3 +1,6 @@
+//! Store — SQLite persistence for evidence, results, and drift.
+//! See `docs/architecture.md` and `docs/evidence.md`.
+
 use crate::evidence::{ArtifactType, Evidence};
 use anyhow::Context;
 use chrono::{DateTime, Utc};

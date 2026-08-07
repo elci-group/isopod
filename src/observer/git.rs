@@ -1,3 +1,6 @@
+//! GitObserver — branch protection, commits, merges, review evidence.
+//! Read-only `git` CLI, no network.
+
 use crate::evidence::{ArtifactType, Observation};
 use async_trait::async_trait;
 use serde_json::json;

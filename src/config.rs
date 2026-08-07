@@ -1,3 +1,6 @@
+//! Config — local-first, file-based, sandbox-aware.
+//! See `docs/configuration.md`.
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 

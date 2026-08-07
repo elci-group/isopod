@@ -1,3 +1,7 @@
+//! Observer Layer — trait, composite, and ecosystem inheritance.
+//! Inherit evidence from Traci, Dreamseq, Jeenome, Kaptaind, Hellhound, Deliver.
+//! See `docs/architecture.md`.
+
 pub mod git;
 pub mod system;
 

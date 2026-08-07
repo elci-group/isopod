@@ -1,3 +1,6 @@
+//! Drift Detection — PASS→FAIL transitions with severity scoring.
+//! See `docs/controls.md`.
+
 use crate::control::ControlStatus;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};

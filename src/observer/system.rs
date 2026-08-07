@@ -1,3 +1,6 @@
+//! SystemObserver — host posture via /var/log, systemctl, /proc.
+//! Read-only, minimal privilege.
+
 use crate::evidence::{ArtifactType, Observation};
 use async_trait::async_trait;
 use serde_json::json;

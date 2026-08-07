@@ -2,6 +2,12 @@
 
 > **Continuous evidence. Continuous evaluation. Continuous governance.**
 
+[![Rust](https://img.shields.io/badge/Rust-1.74%2B-orange?logo=rust)](https://www.rust-lang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](Cargo.toml)
+![Status: Phase 1](https://img.shields.io/badge/Status-Phase%201%20Core-green)
+
+**Docs:** [Architecture](docs/architecture.md) · [Configuration](docs/configuration.md) · [Evidence](docs/evidence.md) · [Controls](docs/controls.md) · [API](docs/api.md) · [Operations](docs/operations.md) · [Development](docs/development.md)
+
 Isopod turns compliance from a quarterly audit scramble into a continuously observable engineering property. It watches your systems, collects tamper-evident evidence, evaluates declarative controls, detects drift, and guides remediation — so you can answer *“are we compliant?”* at any moment, with proof.
 
 ```
@@ -32,6 +38,8 @@ isopod status
 **Daemon, not scanner.** Isopod observes change as it happens — git, host, pipeline, and the evidence graphs your existing tools already produce.
 
 **Framework-agnostic.** ISO 27001/27002/27017/27018/22301 today; SOC 2, NIST CSF, CIS, GDPR, HIPAA, and PCI DSS tomorrow. Controls are YAML; the engine is generic.
+
+**Governance, not re-scanning.** Inherits evidence graphs from Traci (traceability), Dreamseq (semantic histories), Jeenome (behaviour), Kaptaind (releases), Hellhound (health), and Deliver (milestones).
 
 ---
 
@@ -205,9 +213,19 @@ isopod status  # shows advisory fixes inline
 - Assumes the monitored system may become compromised — evidence integrity is first-class.
 - Encrypted sensitive artifacts and secure update are roadmap items.
 
-## Docs & Revision
+## Documentation
 
-Docs are revised with **goglz** (`goglz revise --directory .`) — Groq LLaMA 3.3 70B via `goglz.yaml` (purpose: clarity, scope: all Markdown, tone: professional & approachable, voice: active & direct). The current README was generated with that pipeline and manually verified.
+| Doc | Purpose |
+|---|---|
+| [Architecture](docs/architecture.md) | Pipeline, components, storage, security |
+| [Configuration](docs/configuration.md) | `~/.isopod/config.yaml`, env vars, daemon interval |
+| [Evidence](docs/evidence.md) | Evidence record, lifecycle, hashing, tamper detection |
+| [Controls](docs/controls.md) | Pack format, evaluation thresholds, authoring new frameworks |
+| [API](docs/api.md) | `GET /health`, `/compliance`, `/evidence`, `/drift` |
+| [Operations](docs/operations.md) | One-shot, daemon, systemd, Docker, export, troubleshooting |
+| [Development](docs/development.md) | Layout, style, tests, `goglz`, `kaptaind`, `deliver` |
+
+Docs are revised with **goglz** (`goglz revise --directory .`) — Groq LLaMA 3.3 70B via `goglz.yaml` (purpose: clarity, scope: all Markdown, tone: professional & approachable, voice: active & direct). This README and all `docs/*.md` were produced with that pipeline and manually verified.
 
 Run locally:
 
@@ -219,4 +237,4 @@ HOME=/tmp/home /tmp/goglz-target/debug/goglz revise --directory .  # requires GR
 
 ## License
 
-MIT — see `Cargo.toml`.
+MIT — see `Cargo.toml` and `LICENSE` (if present).

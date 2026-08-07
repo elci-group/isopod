@@ -1,8 +1,15 @@
+//! Evidence Engine — immutable, hash-verified artifacts.
+//!
+//! Every compliance claim maps to an `Evidence` record. Observations from
+//! observers are normalized into `Evidence` with SHA-256 hashing, timestamps,
+//! and confidence scores. See `docs/evidence.md` for the lifecycle.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 /// Immutable evidence record — every compliance claim maps to this.
+/// See `docs/evidence.md` for the full lifecycle and tamper detection.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Evidence {
     pub id: String,

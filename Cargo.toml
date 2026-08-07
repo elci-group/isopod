@@ -1,6 +1,6 @@
 [package]
 name = "isopod"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.74"
 description = "Autonomous compliance maintenance daemon — continuous evidence, control evaluation, drift detection"

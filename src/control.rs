@@ -1,3 +1,8 @@
+//! Control Engine — declarative YAML packs, deterministic evaluation.
+//!
+//! Loads `ControlSet` from `controls/*.yaml` and evaluates `ControlResult`
+//! per control. See `docs/controls.md` for the pack format and thresholds.
+
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
