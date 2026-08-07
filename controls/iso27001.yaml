@@ -1,0 +1,128 @@
+framework: iso27001
+version: "2022"
+controls:
+  - id: ISO27001-A.5.1
+    title: Policies for information security
+    description: Information security policy and topic-specific policies defined, approved and communicated.
+    framework: iso27001
+    requirements:
+      - policy_documented
+      - policy_approved
+      - policy_reviewed
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.5.10
+    title: Acceptable use of information and assets
+    description: Rules for acceptable use and handling of information and assets identified and documented.
+    framework: iso27001
+    requirements:
+      - acceptable_use_documented
+      - handling_procedures
+    severity_missing: medium
+    severity_degraded: low
+
+  - id: ISO27001-A.5.15
+    title: Access control
+    description: Rules to control physical and logical access to information and assets established.
+    framework: iso27001
+    requirements:
+      - access_policy_documented
+      - access_reviewed
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.8.9
+    title: Configuration management
+    description: Configurations including security configurations managed through life-cycle.
+    framework: iso27001
+    requirements:
+      - branch_protection
+      - review_evidence
+      - release_metadata
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.8.13
+    title: Information backup
+    description: Backup copies of information, software and systems maintained and tested.
+    framework: iso27001
+    requirements:
+      - backups_enabled
+      - backups_tested
+      - backups_retained
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.8.15
+    title: Logging
+    description: Logs recording events, activities and transactions produced, stored, protected and analysed.
+    framework: iso27001
+    requirements:
+      - audit_logs_enabled
+      - logs_retained
+      - logs_protected
+      - access_monitored
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.8.16
+    title: Monitoring activities
+    description: Networks, systems and applications monitored for anomalous behaviour and acted upon.
+    framework: iso27001
+    requirements:
+      - monitoring_enabled
+      - anomaly_detection
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.8.26
+    title: Application security requirements
+    description: Requirements for securing information in application systems, including encryption.
+    framework: iso27001
+    requirements:
+      - encryption_at_rest
+      - encryption_in_transit
+      - certificate_valid
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.8.29
+    title: Security testing in development and acceptance
+    description: Security testing processes defined and performed during development and acceptance.
+    framework: iso27001
+    requirements:
+      - security_tests
+      - acceptance_criteria
+    severity_missing: medium
+    severity_degraded: low
+
+  - id: ISO27001-A.8.30
+    title: Outsourced development
+    description: Outsourced development supervised and monitored; provenance tracked.
+    framework: iso27001
+    requirements:
+      - supplier_security
+      - provenance_tracked
+    severity_missing: medium
+    severity_degraded: low
+
+  - id: ISO27001-A.9.2
+    title: Access management
+    description: User access provisioning, review and revocation managed; privileged access controlled.
+    framework: iso27001
+    requirements:
+      - access_provisioning
+      - access_reviewed
+      - privileged_monitored
+    severity_missing: high
+    severity_degraded: medium
+
+  - id: ISO27001-A.6.1
+    title: Screening
+    description: Background verification checks carried out for personnel.
+    framework: iso27001
+    requirements:
+      - screening_performed
+    severity_missing: medium
+    severity_degraded: low

@@ -1,0 +1,54 @@
+[package]
+name = "isopod"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Autonomous compliance maintenance daemon — continuous evidence, control evaluation, drift detection"
+license = "MIT"
+repository = "https://github.com/elci-group/isopod"
+keywords = ["compliance", "iso27001", "daemon", "evidence", "governance"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "isopod"
+path = "src/main.rs"
+
+[lib]
+name = "isopod"
+path = "src/lib.rs"
+
+[dependencies]
+tokio = { version = "1.43", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+chrono = { version = "0.4", features = ["serde", "clock"] }
+clap = { version = "4.5", features = ["derive", "env"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+sha2 = "0.10"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+anyhow = "1.0"
+thiserror = "2.0"
+async-trait = "0.1"
+axum = { version = "0.7", features = ["json"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["trace", "cors"] }
+dirs = "5.0"
+walkdir = "2.5"
+regex = "1.11"
+
+[dev-dependencies]
+tempfile = "3.10"
+
+[profile.release]
+lto = "thin"
+strip = true
+codegen-units = 1
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "deny"

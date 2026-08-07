@@ -1,0 +1,5 @@
+/target
+/.isopod
+/state.db
+*.db
+.DS_Store
