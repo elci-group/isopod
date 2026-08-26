@@ -1,0 +1,169 @@
+# Third-Party Notices for isopod
+
+Project license: MIT
+
+| Dependency | Version | License | Source |
+|------------|---------|---------|--------|
+| ahash | 0.8.12 | MIT OR Apache-2.0 | cargo |
+| aho-corasick | 1.1.5 | Unlicense OR MIT | cargo |
+| android_system_properties | 0.1.5 | MIT/Apache-2.0 | cargo |
+| anstream | 1.0.0 | MIT OR Apache-2.0 | cargo |
+| anstyle | 1.0.14 | MIT OR Apache-2.0 | cargo |
+| anstyle-parse | 1.0.0 | MIT OR Apache-2.0 | cargo |
+| anstyle-query | 1.1.5 | MIT OR Apache-2.0 | cargo |
+| anstyle-wincon | 3.0.11 | MIT OR Apache-2.0 | cargo |
+| anyhow | 1.0.104 | MIT OR Apache-2.0 | cargo |
+| async-trait | 0.1.91 | MIT OR Apache-2.0 | cargo |
+| atomic-waker | 1.1.2 | Apache-2.0 OR MIT | cargo |
+| autocfg | 1.5.1 | Apache-2.0 OR MIT | cargo |
+| axum | 0.7.9 | MIT | cargo |
+| axum-core | 0.4.5 | MIT | cargo |
+| bitflags | 2.13.1 | MIT OR Apache-2.0 | cargo |
+| block-buffer | 0.10.4 | MIT OR Apache-2.0 | cargo |
+| bumpalo | 3.20.3 | MIT OR Apache-2.0 | cargo |
+| bytes | 1.12.1 | MIT | cargo |
+| cc | 1.4.0 | MIT OR Apache-2.0 | cargo |
+| cfg-if | 1.0.4 | MIT OR Apache-2.0 | cargo |
+| chrono | 0.4.45 | MIT OR Apache-2.0 | cargo |
+| clap | 4.6.6 | MIT OR Apache-2.0 | cargo |
+| clap_builder | 4.6.6 | MIT OR Apache-2.0 | cargo |
+| clap_derive | 4.6.4 | MIT OR Apache-2.0 | cargo |
+| clap_lex | 1.1.0 | MIT OR Apache-2.0 | cargo |
+| colorchoice | 1.0.5 | MIT OR Apache-2.0 | cargo |
+| core-foundation-sys | 0.8.7 | MIT OR Apache-2.0 | cargo |
+| cpufeatures | 0.2.17 | MIT OR Apache-2.0 | cargo |
+| crypto-common | 0.1.7 | MIT OR Apache-2.0 | cargo |
+| digest | 0.10.7 | MIT OR Apache-2.0 | cargo |
+| dirs | 5.0.1 | MIT OR Apache-2.0 | cargo |
+| dirs-sys | 0.4.1 | MIT OR Apache-2.0 | cargo |
+| equivalent | 1.0.2 | Apache-2.0 OR MIT | cargo |
+| errno | 0.3.14 | MIT OR Apache-2.0 | cargo |
+| fallible-iterator | 0.3.0 | MIT/Apache-2.0 | cargo |
+| fallible-streaming-iterator | 0.1.9 | MIT/Apache-2.0 | cargo |
+| fastrand | 2.5.0 | Apache-2.0 OR MIT | cargo |
+| find-msvc-tools | 0.1.9 | MIT OR Apache-2.0 | cargo |
+| form_urlencoded | 1.2.2 | MIT OR Apache-2.0 | cargo |
+| futures-channel | 0.3.33 | MIT OR Apache-2.0 | cargo |
+| futures-core | 0.3.33 | MIT OR Apache-2.0 | cargo |
+| futures-task | 0.3.33 | MIT OR Apache-2.0 | cargo |
+| futures-util | 0.3.33 | MIT OR Apache-2.0 | cargo |
+| generic-array | 0.14.7 | MIT | cargo |
+| getrandom | 0.2.17 | MIT OR Apache-2.0 | cargo |
+| hashbrown | 0.14.5 | MIT OR Apache-2.0 | cargo |
+| hashlink | 0.9.1 | MIT OR Apache-2.0 | cargo |
+| heck | 0.5.0 | MIT OR Apache-2.0 | cargo |
+| http | 1.5.0 | MIT OR Apache-2.0 | cargo |
+| http-body | 1.1.0 | MIT | cargo |
+| http-body-util | 0.1.4 | MIT | cargo |
+| httparse | 1.10.1 | MIT OR Apache-2.0 | cargo |
+| httpdate | 1.0.3 | MIT OR Apache-2.0 | cargo |
+| hyper | 1.11.0 | MIT | cargo |
+| hyper-util | 0.1.20 | MIT | cargo |
+| iana-time-zone | 0.1.65 | MIT OR Apache-2.0 | cargo |
+| iana-time-zone-haiku | 0.1.2 | MIT OR Apache-2.0 | cargo |
+| indexmap | 2.14.0 | Apache-2.0 OR MIT | cargo |
+| is_terminal_polyfill | 1.70.2 | MIT OR Apache-2.0 | cargo |
+| itoa | 1.0.18 | MIT OR Apache-2.0 | cargo |
+| js-sys | 0.3.103 | MIT OR Apache-2.0 | cargo |
+| lazy_static | 1.5.0 | MIT OR Apache-2.0 | cargo |
+| libc | 0.2.189 | MIT OR Apache-2.0 | cargo |
+| libredox | 0.1.18 | MIT | cargo |
+| libsqlite3-sys | 0.30.1 | MIT | cargo |
+| linux-raw-sys | 0.12.1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | cargo |
+| lock_api | 0.4.14 | MIT OR Apache-2.0 | cargo |
+| log | 0.4.33 | MIT OR Apache-2.0 | cargo |
+| matchers | 0.2.0 | MIT | cargo |
+| matchit | 0.7.3 | MIT AND BSD-3-Clause | cargo |
+| memchr | 2.8.3 | Unlicense OR MIT | cargo |
+| mime | 0.3.17 | MIT OR Apache-2.0 | cargo |
+| mio | 1.2.2 | MIT | cargo |
+| nu-ansi-term | 0.50.3 | MIT | cargo |
+| num-traits | 0.2.19 | MIT OR Apache-2.0 | cargo |
+| once_cell | 1.21.4 | MIT OR Apache-2.0 | cargo |
+| once_cell_polyfill | 1.70.2 | MIT OR Apache-2.0 | cargo |
+| option-ext | 0.2.0 | MPL-2.0 | cargo |
+| parking_lot | 0.12.5 | MIT OR Apache-2.0 | cargo |
+| parking_lot_core | 0.9.12 | MIT OR Apache-2.0 | cargo |
+| percent-encoding | 2.3.2 | MIT OR Apache-2.0 | cargo |
+| pin-project-lite | 0.2.17 | Apache-2.0 OR MIT | cargo |
+| pkg-config | 0.3.33 | MIT OR Apache-2.0 | cargo |
+| proc-macro2 | 1.0.107 | MIT OR Apache-2.0 | cargo |
+| quote | 1.0.47 | MIT OR Apache-2.0 | cargo |
+| r-efi | 6.0.0 | MIT OR Apache-2.0 OR LGPL-2.1-or-later | cargo |
+| redox_syscall | 0.5.18 | MIT | cargo |
+| redox_users | 0.4.6 | MIT | cargo |
+| regex-automata | 0.4.18 | MIT OR Apache-2.0 | cargo |
+| regex-syntax | 0.8.11 | MIT OR Apache-2.0 | cargo |
+| rusqlite | 0.32.1 | MIT | cargo |
+| rustix | 1.1.4 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | cargo |
+| rustversion | 1.0.23 | MIT OR Apache-2.0 | cargo |
+| ryu | 1.0.23 | Apache-2.0 OR BSL-1.0 | cargo |
+| same-file | 1.0.6 | Unlicense/MIT | cargo |
+| scopeguard | 1.2.0 | MIT OR Apache-2.0 | cargo |
+| serde | 1.0.229 | MIT OR Apache-2.0 | cargo |
+| serde_core | 1.0.229 | MIT OR Apache-2.0 | cargo |
+| serde_derive | 1.0.229 | MIT OR Apache-2.0 | cargo |
+| serde_json | 1.0.151 | MIT OR Apache-2.0 | cargo |
+| serde_path_to_error | 0.1.20 | MIT OR Apache-2.0 | cargo |
+| serde_urlencoded | 0.7.1 | MIT/Apache-2.0 | cargo |
+| serde_yaml | 0.9.34+deprecated | MIT OR Apache-2.0 | cargo |
+| sha2 | 0.10.9 | MIT OR Apache-2.0 | cargo |
+| sharded-slab | 0.1.7 | MIT | cargo |
+| shlex | 2.0.1 | MIT OR Apache-2.0 | cargo |
+| signal-hook-registry | 1.4.8 | MIT OR Apache-2.0 | cargo |
+| slab | 0.4.12 | MIT | cargo |
+| smallvec | 1.15.2 | MIT OR Apache-2.0 | cargo |
+| socket2 | 0.6.5 | MIT OR Apache-2.0 | cargo |
+| strsim | 0.11.1 | MIT | cargo |
+| syn | 2.0.119 | MIT OR Apache-2.0 | cargo |
+| sync_wrapper | 1.0.2 | Apache-2.0 | cargo |
+| tempfile | 3.27.0 | MIT OR Apache-2.0 | cargo |
+| thiserror | 1.0.69 | MIT OR Apache-2.0 | cargo |
+| thiserror-impl | 1.0.69 | MIT OR Apache-2.0 | cargo |
+| thread_local | 1.1.10 | MIT OR Apache-2.0 | cargo |
+| tokio | 1.53.1 | MIT | cargo |
+| tokio-macros | 2.7.2 | MIT | cargo |
+| tower | 0.5.3 | MIT | cargo |
+| tower-layer | 0.3.3 | MIT | cargo |
+| tower-service | 0.3.3 | MIT | cargo |
+| tracing | 0.1.44 | MIT | cargo |
+| tracing-attributes | 0.1.31 | MIT | cargo |
+| tracing-core | 0.1.36 | MIT | cargo |
+| tracing-log | 0.2.0 | MIT | cargo |
+| tracing-subscriber | 0.3.23 | MIT | cargo |
+| typenum | 1.20.1 | MIT OR Apache-2.0 | cargo |
+| unicode-ident | 1.0.24 | (MIT OR Apache-2.0) AND Unicode-3.0 | cargo |
+| unsafe-libyaml | 0.2.11 | MIT | cargo |
+| utf8parse | 0.2.2 | Apache-2.0 OR MIT | cargo |
+| uuid | 1.24.0 | Apache-2.0 OR MIT | cargo |
+| valuable | 0.1.1 | MIT | cargo |
+| vcpkg | 0.2.15 | MIT/Apache-2.0 | cargo |
+| version_check | 0.9.5 | MIT/Apache-2.0 | cargo |
+| walkdir | 2.5.0 | Unlicense/MIT | cargo |
+| wasi | 0.11.1+wasi-snapshot-preview1 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | cargo |
+| wasm-bindgen | 0.2.126 | MIT OR Apache-2.0 | cargo |
+| wasm-bindgen-macro | 0.2.126 | MIT OR Apache-2.0 | cargo |
+| wasm-bindgen-macro-support | 0.2.126 | MIT OR Apache-2.0 | cargo |
+| wasm-bindgen-shared | 0.2.126 | MIT OR Apache-2.0 | cargo |
+| winapi-util | 0.1.11 | Unlicense OR MIT | cargo |
+| windows-core | 0.62.2 | MIT OR Apache-2.0 | cargo |
+| windows-implement | 0.60.2 | MIT OR Apache-2.0 | cargo |
+| windows-interface | 0.59.3 | MIT OR Apache-2.0 | cargo |
+| windows-link | 0.2.1 | MIT OR Apache-2.0 | cargo |
+| windows-result | 0.4.1 | MIT OR Apache-2.0 | cargo |
+| windows-strings | 0.5.1 | MIT OR Apache-2.0 | cargo |
+| windows-sys | 0.48.0 | MIT OR Apache-2.0 | cargo |
+| windows-targets | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_aarch64_gnullvm | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_aarch64_msvc | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_i686_gnu | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_i686_msvc | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_x86_64_gnu | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_x86_64_gnullvm | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| windows_x86_64_msvc | 0.48.5 | MIT OR Apache-2.0 | cargo |
+| zerocopy | 0.8.56 | BSD-2-Clause OR Apache-2.0 OR MIT | cargo |
+| zerocopy-derive | 0.8.56 | BSD-2-Clause OR Apache-2.0 OR MIT | cargo |
+| zmij | 1.0.23 | MIT | cargo |
+
+---
+Generated by lwoodz. Review licenses for compliance before distribution.

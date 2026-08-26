@@ -1,0 +1,32 @@
+# Copyright (c) 2026 sal
+# SPDX-License-Identifier: MIT
+# ISO 27002:2022 — Guidance (supplements 27001)
+# See docs/controls.md
+
+framework: iso27002
+version: "2022"
+controls:
+  - id: ISO27002-8.15.1
+    title: Logging guidance
+    description: Detailed guidance for logging implementation.
+    framework: iso27002
+    requirements:
+      - log_sources_defined
+      - log_retention_defined
+    evidence_types:
+      - audit_log
+    severity_missing: medium
+    severity_degraded: low
+
+  - id: ISO27002-8.26.1
+    title: Cloud encryption guidance
+    description: Encryption guidance aligned to ISO 27017/27018 cloud controls.
+    framework: iso27002
+    requirements:
+      - cloud_encryption_enabled
+      - key_management
+    evidence_types:
+      - encryption_state
+      - certificate
+    severity_missing: high
+    severity_degraded: medium

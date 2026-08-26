@@ -1,0 +1,62 @@
+# Copyright (c) 2026 sal
+# SPDX-License-Identifier: MIT
+# Isopod A+ deliverables
+# Run with: deliver --spec deliver.toml --strict
+
+[[file]]
+path = "Cargo.toml"
+required = true
+forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
+
+[[file]]
+path = "src/lib.rs"
+required = true
+forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
+
+[[file]]
+path = "src/main.rs"
+required = true
+forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
+
+[[file]]
+path = "README.md"
+required = true
+
+[[file]]
+path = ".github/workflows/ci.yml"
+required = true
+
+[[file]]
+path = "deliver.toml"
+required = true
+
+[[command]]
+name = "cargo fmt"
+cmd = ["cargo", "fmt", "--", "--check"]
+expect_exit = 0
+timeout_secs = 120
+
+[[command]]
+name = "cargo clippy"
+cmd = ["cargo", "clippy", "--offline", "--", "-D", "warnings"]
+expect_exit = 0
+timeout_secs = 300
+
+[[command]]
+name = "cargo test"
+cmd = ["cargo", "test", "--offline"]
+expect_exit = 0
+timeout_secs = 300
+stdout_contains = ["test result: ok"]
+
+[[command]]
+name = "cargo doc"
+cmd = ["cargo", "doc", "--offline", "--no-deps"]
+expect_exit = 0
+timeout_secs = 300
+
+[[command]]
+name = "cargo build release"
+cmd = ["cargo", "build", "--release", "--offline"]
+expect_exit = 0
+timeout_secs = 300

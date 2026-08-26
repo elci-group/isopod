@@ -1,0 +1,141 @@
+# Copyright (c) 2026 sal
+# SPDX-License-Identifier: MIT
+# Goglz Revision Configuration
+# This file defines how documents should be revised when using the `goglz revise` command
+
+# The overall purpose of document revision
+purpose: "Improve document clarity, consistency, and readability across the project"
+
+# The scope of documents to be revised
+scope: "All documentation files in the project including README, guides, and technical documentation"
+
+# Writing style guidelines
+writing_style:
+  tone: "Professional and approachable"
+  voice: "Active and direct"
+  audience: "Developers and technical users"
+  guidelines:
+    - "Use active voice instead of passive voice"
+    - "Be concise while maintaining completeness"
+    - "Avoid jargon unless necessary, then explain it"
+    - "Use clear headings and subheadings"
+    - "Provide examples for complex concepts"
+    - "Maintain consistent terminology throughout"
+
+# Formatting rules for document structure
+formatting_rules:
+  headings: true
+  bullet_points: true
+  numbered_lists: true
+  code_blocks: true
+  max_line_length: 80
+  custom_rules:
+    - "Use Markdown for all documentation"
+    - "Include code examples with syntax highlighting"
+    - "Use proper indentation for nested lists"
+    - "Separate sections with blank lines"
+
+# Global assets available to all documents
+# These files provide context and guidelines for revision
+# Uncomment and add actual files that exist in your project
+global_assets: []
+
+# Local assets relative to individual documents
+# These can be referenced in subdirectories for specific contexts
+# Uncomment and add actual files that exist in your project
+local_assets: []
+
+# Multi-language translation configuration
+# Languages for which translations should be generated automatically
+# All translations are generated in parallel from the same conceptual assessment
+# to maximize API efficiency and ensure consistency across languages
+languages:
+  - code: "en"
+    name: "English"
+    enabled: true
+    output_pattern: "{filename}.{ext}"
+  
+  - code: "es"
+    name: "Spanish"
+    enabled: false
+    output_pattern: "{filename}_es.{ext}"
+  
+  - code: "zh"
+    name: "Chinese"
+    enabled: false
+    output_pattern: "{filename}_zh.{ext}"
+  
+  - code: "fr"
+    name: "French"
+    enabled: false
+    output_pattern: "{filename}_fr.{ext}"
+  
+  - code: "de"
+    name: "German"
+    enabled: false
+    output_pattern: "{filename}_de.{ext}"
+  
+  - code: "nl"
+    name: "Dutch"
+    enabled: false
+    output_pattern: "{filename}_nl.{ext}"
+  
+  - code: "af"
+    name: "Afrikaans"
+    enabled: false
+    output_pattern: "{filename}_af.{ext}"
+  
+  - code: "tw"
+    name: "Twi"
+    enabled: false
+    output_pattern: "{filename}_tw.{ext}"
+  
+  - code: "ig"
+    name: "Igbo"
+    enabled: false
+    output_pattern: "{filename}_ig.{ext}"
+  
+  - code: "yo"
+    name: "Yoruba"
+    enabled: false
+    output_pattern: "{filename}_yo.{ext}"
+  
+  - code: "yue"
+    name: "Cantonese"
+    enabled: false
+    output_pattern: "{filename}_yue.{ext}"
+  
+  - code: "ja"
+    name: "Japanese"
+    enabled: false
+    output_pattern: "{filename}_ja.{ext}"
+  
+  - code: "hi"
+    name: "Hindi"
+    enabled: false
+    output_pattern: "{filename}_hi.{ext}"
+  
+  - code: "gu"
+    name: "Gujarati"
+    enabled: false
+    output_pattern: "{filename}_gu.{ext}"
+  
+  - code: "ar"
+    name: "Arabic"
+    enabled: false
+    output_pattern: "{filename}_ar.{ext}"
+  
+  - code: "he"
+    name: "Hebrew"
+    enabled: false
+    output_pattern: "{filename}_he.{ext}"
+  
+  - code: "ko"
+    name: "Korean"
+    enabled: false
+    output_pattern: "{filename}_ko.{ext}"
+  
+  - code: "pt"
+    name: "Portuguese"
+    enabled: false
+    output_pattern: "{filename}_pt.{ext}"
