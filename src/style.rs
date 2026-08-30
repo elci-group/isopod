@@ -16,6 +16,18 @@ fn use_color() -> bool {
     std::io::stdout().is_terminal()
 }
 
+fn motion_disabled() -> bool {
+    std::env::var_os("ISOPOD_NO_ANIMATION").is_some()
+        || std::env::var("TERM").is_ok_and(|term| term == "dumb")
+}
+
+/// Whether it's safe to animate stdout: honours the same `NO_COLOR` /
+/// `ISOPOD_NO_COLOR` / TTY checks as colour, plus `ISOPOD_NO_ANIMATION` and
+/// `TERM=dumb` for callers that want colour but not motion.
+pub fn animations_enabled() -> bool {
+    use_color() && !motion_disabled()
+}
+
 fn c(code: &str, s: &str) -> String {
     if use_color() {
         format!("\x1b[{code}m{s}\x1b[0m")

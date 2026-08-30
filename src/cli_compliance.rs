@@ -1,6 +1,7 @@
 // Copyright (c) 2026 sal
 // SPDX-License-Identifier: MIT
 use anyhow::Result;
+use form3::IsopodCrawl;
 use isopod::{
     config::Config,
     control::{self, ControlResult, ControlStatus},
@@ -9,7 +10,32 @@ use isopod::{
     store::Store,
     style,
 };
+use std::io::Write;
+use std::time::Duration;
 use std::{path::Path, sync::Arc};
+
+const POSTURE_TRACK_WIDTH: usize = 32;
+const POSTURE_CRAWL_FRAMES: u32 = 24;
+
+/// Crawl a small isopod across a track towards `score` before printing the
+/// posture line in place of it. No-ops when animation is disabled (piped
+/// output, `NO_COLOR`, `ISOPOD_NO_ANIMATION`, `TERM=dumb`, ...).
+fn animate_compliance_posture(score: f32) {
+    if !style::animations_enabled() {
+        return;
+    }
+    let crawl = IsopodCrawl::new(POSTURE_TRACK_WIDTH);
+    let target = (score / 100.0).clamp(0.0, 1.0);
+    let mut stdout = std::io::stdout();
+    for tick in 0..=POSTURE_CRAWL_FRAMES {
+        let progress = target * tick as f32 / POSTURE_CRAWL_FRAMES as f32;
+        let _ = write!(stdout, "\r  {}", crawl.render(progress, tick));
+        let _ = stdout.flush();
+        std::thread::sleep(Duration::from_millis(28));
+    }
+    let _ = write!(stdout, "\r\x1b[2K");
+    let _ = stdout.flush();
+}
 
 pub async fn check(base: &Path, config: &Config, store: Arc<Store>, json: bool) -> Result<bool> {
     let results = Daemon::new(config.clone(), store).tick(base).await?;
@@ -126,6 +152,7 @@ fn render(results: &[ControlResult]) {
         passing as f32 / total as f32 * 100.0
     };
     println!("{}\n", style::banner());
+    animate_compliance_posture(score);
     println!(
         "  {}  {}%",
         style::bold("Compliance posture"),

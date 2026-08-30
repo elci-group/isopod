@@ -1,0 +1,10 @@
+[project]
+name = "isopod"
+
+[tools]
+traci = true
+
+[rules]
+documentation = true
+security = true
+testing = true
