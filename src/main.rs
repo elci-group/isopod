@@ -1,5 +1,7 @@
 // Copyright (c) 2026 sal
 // SPDX-License-Identifier: MIT
+mod curly_expand;
+
 use clap::{Parser, Subcommand};
 use isopod::config::Config;
 use isopod::store::Store;
@@ -205,7 +207,7 @@ enum Commands {
 }
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn __curly_original_main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
@@ -705,5 +707,90 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
+    Ok(())
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let raw_args: Vec<String> = std::env::args().collect();
+    let mut positions: Vec<usize> = Vec::new();
+    let mut fields: Vec<Vec<String>> = Vec::new();
+    for (__i, __a) in raw_args.iter().enumerate() {
+        if __a == "--config" {
+            if let Some(__v) = raw_args.get(__i + 1) {
+                positions.push(__i + 1);
+                fields.push(curly_expand::expand_or_literal(__v));
+            }
+            break;
+        } else if let Some(__v) = __a.strip_prefix("--config=") {
+            positions.push(__i);
+            fields.push(
+                curly_expand::expand_or_literal(__v)
+                    .into_iter()
+                    .map(|v| format!("--config={}", v))
+                    .collect(),
+            );
+            break;
+        }
+    }
+    for (__i, __a) in raw_args.iter().enumerate() {
+        if __a == "--base" {
+            if let Some(__v) = raw_args.get(__i + 1) {
+                positions.push(__i + 1);
+                fields.push(curly_expand::expand_or_literal(__v));
+            }
+            break;
+        } else if let Some(__v) = __a.strip_prefix("--base=") {
+            positions.push(__i);
+            fields.push(
+                curly_expand::expand_or_literal(__v)
+                    .into_iter()
+                    .map(|v| format!("--base={}", v))
+                    .collect(),
+            );
+            break;
+        }
+    }
+    for (__i, __a) in raw_args.iter().enumerate() {
+        if __a == "--controls" {
+            if let Some(__v) = raw_args.get(__i + 1) {
+                positions.push(__i + 1);
+                fields.push(curly_expand::expand_or_literal(__v));
+            }
+            break;
+        } else if let Some(__v) = __a.strip_prefix("--controls=") {
+            positions.push(__i);
+            fields.push(
+                curly_expand::expand_or_literal(__v)
+                    .into_iter()
+                    .map(|v| format!("--controls={}", v))
+                    .collect(),
+            );
+            break;
+        }
+    }
+
+    if fields.is_empty() || fields.iter().all(|f| f.len() <= 1) {
+        return Ok(__curly_original_main()?);
+    }
+
+    let combos = curly_expand::cartesian(&fields);
+    let exe = std::env::current_exe().expect("resolve current exe");
+    let mut had_failure = false;
+    for combo in &combos {
+        let mut new_args = raw_args.clone();
+        for (slot, value) in positions.iter().zip(combo.iter()) {
+            new_args[*slot] = value.clone();
+        }
+        let status = std::process::Command::new(&exe)
+            .args(&new_args[1..])
+            .status()
+            .expect("failed to re-exec self");
+        if !status.success() {
+            had_failure = true;
+        }
+    }
+    if had_failure {
+        std::process::exit(1);
+    }
     Ok(())
 }
