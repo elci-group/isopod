@@ -35,6 +35,10 @@ pub struct Control {
     pub description: Option<String>,
     pub framework: String,
     pub requirements: Vec<String>,
+    /// Evidence artifact types accepted for this control. Defaulted so a
+    /// pack written before this field existed still parses (degraded: it
+    /// will accept no evidence) instead of failing the whole file.
+    #[serde(default)]
     pub evidence_types: Vec<String>,
     pub severity_missing: String,
     pub severity_degraded: String,
@@ -236,26 +240,111 @@ impl ControlSet {
         Self::from_yaml_str(&text)
     }
 
+    /// Canonical packs shipped inside the binary. Used to self-heal a
+    /// `controls_dir` whose on-disk copy is missing or fails to parse (e.g.
+    /// a stale provisioning snapshot from before a schema change), so a
+    /// broken install degrades to a known-good pack instead of silently
+    /// evaluating zero controls.
+    fn embedded_packs() -> &'static [(&'static str, &'static str)] {
+        &[
+            ("iso27001", include_str!("../controls/iso27001.yaml")),
+            ("iso27002", include_str!("../controls/iso27002.yaml")),
+        ]
+    }
+
+    /// Load every `*.yaml`/`*.yml` file in `dir`. A file that fails to parse
+    /// is skipped but logged loudly (`tracing::warn!`) — never silently
+    /// dropped, since a compliance engine that can't explain why a control
+    /// pack disappeared is itself the kind of observability gap ISO27001-A.8.15
+    /// and A.8.16 exist to catch.
     pub fn load_dir(dir: &std::path::Path) -> Self {
         let mut out = Vec::new();
         let mut versions = std::collections::HashMap::new();
-        if let Ok(entries) = std::fs::read_dir(dir) {
-            for entry in entries.flatten() {
-                let p = entry.path();
-                if p.extension().and_then(|e| e.to_str()) == Some("yaml")
-                    || p.extension().and_then(|e| e.to_str()) == Some("yml")
-                {
-                    if let Ok(set) = Self::from_yaml_file(&p) {
-                        out.extend(set.controls);
-                        versions.extend(set.versions);
+        match std::fs::read_dir(dir) {
+            Ok(entries) => {
+                for entry in entries.flatten() {
+                    let p = entry.path();
+                    if p.extension().and_then(|e| e.to_str()) == Some("yaml")
+                        || p.extension().and_then(|e| e.to_str()) == Some("yml")
+                    {
+                        match Self::from_yaml_file(&p) {
+                            Ok(set) => {
+                                out.extend(set.controls);
+                                versions.extend(set.versions);
+                            }
+                            Err(e) => {
+                                tracing::error!(
+                                    path = %p.display(),
+                                    error = %e,
+                                    "control pack failed to parse; skipping (0 controls contributed from this file)"
+                                );
+                            }
+                        }
                     }
                 }
+            }
+            Err(e) => {
+                tracing::warn!(dir = %dir.display(), error = %e, "controls_dir unreadable");
             }
         }
         Self {
             controls: out,
             versions,
         }
+    }
+
+    /// `load_dir`, then self-heal: for each embedded canonical framework
+    /// pack that contributed either zero controls from `dir` (missing
+    /// file, or a parse failure already logged by `load_dir`) or only
+    /// controls with no `evidence_types` (a pre-`evidence_types` snapshot,
+    /// which now parses thanks to that field's `#[serde(default)]` but
+    /// can never be matched against any evidence — a silent dead pack
+    /// that's worse than a loud failure), fall back to the binary-embedded
+    /// copy so a stale or absent on-disk pack degrades to a known-good
+    /// default instead of a permanent 0-evidence posture. When the on-disk
+    /// file exists but was the reason for the fallback, it is rewritten
+    /// with the embedded copy so subsequent runs no longer need to heal.
+    pub fn load_dir_self_healing(dir: &std::path::Path) -> Self {
+        let mut set = Self::load_dir(dir);
+        for (framework, text) in Self::embedded_packs() {
+            let framework_controls: Vec<_> = set
+                .controls
+                .iter()
+                .filter(|c| &c.framework == framework)
+                .collect();
+            let healthy = !framework_controls.is_empty()
+                && framework_controls
+                    .iter()
+                    .any(|c| !c.evidence_types.is_empty());
+            if healthy {
+                continue;
+            }
+            set.controls.retain(|c| &c.framework != framework);
+            match Self::from_yaml_str(text) {
+                Ok(fallback) => {
+                    tracing::warn!(
+                        framework = %framework,
+                        dir = %dir.display(),
+                        "no valid controls loaded for this framework from controls_dir; \
+                         falling back to the embedded canonical pack"
+                    );
+                    let path = dir.join(format!("{framework}.yaml"));
+                    if path.exists() {
+                        if let Err(e) = std::fs::write(&path, text) {
+                            tracing::warn!(path = %path.display(), error = %e, "failed to self-heal stale control pack on disk");
+                        } else {
+                            tracing::info!(path = %path.display(), "self-healed stale control pack from embedded copy");
+                        }
+                    }
+                    set.controls.extend(fallback.controls);
+                    set.versions.extend(fallback.versions);
+                }
+                Err(e) => {
+                    tracing::error!(framework = %framework, error = %e, "embedded canonical control pack failed to parse; this is a build-time defect");
+                }
+            }
+        }
+        set
     }
 
     pub fn version_for(&self, framework: &str) -> Option<&str> {

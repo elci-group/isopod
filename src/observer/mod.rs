@@ -24,10 +24,17 @@ pub mod ecosystem {
     use super::*;
     use std::path::Path;
 
-    /// Traci: traceability evidence (observability enforcement)
+    /// Traci: traceability evidence (observability enforcement).
+    ///
+    /// Traci is invoked ad hoc by callers like `uni` (`traci check <target>
+    /// --format json`) — it does not leave a `.traci/` marker directory
+    /// behind in the target repo. A presence-only check therefore never
+    /// finds evidence for a project analysed this way. Run traci directly
+    /// when it's on PATH and derive confidence from its actual severity
+    /// mix instead of a flat "it ran" score; retain the marker-directory
+    /// check for anyone piping in a pre-computed report.
     pub fn traci_observations(base: &Path) -> Vec<Observation> {
         let mut out = Vec::new();
-        // Look for .traci/state.json or traci reports
         for candidate in [base.join(".traci"), base.join("target/traci")] {
             if candidate.exists() {
                 out.push(Observation::new(
@@ -37,8 +44,56 @@ pub mod ecosystem {
                 ));
             }
         }
-        // Also check if traci binary output directory exists as evidence
+        if let Some(mut obs) = run_traci(base) {
+            out.append(&mut obs);
+        }
         out
+    }
+
+    fn run_traci(base: &Path) -> Option<Vec<Observation>> {
+        let output = std::process::Command::new("traci")
+            .arg("check")
+            .arg(base)
+            .args(["--format", "json"])
+            .output()
+            .ok()?;
+        if !output.status.success() && output.stdout.is_empty() {
+            tracing::warn!(status = %output.status, "traci invocation failed; no observability evidence collected");
+            return None;
+        }
+        let report: serde_json::Value = serde_json::from_slice(&output.stdout).ok()?;
+        let diagnostics = report.get("diagnostics")?.as_array()?;
+        let critical = diagnostics
+            .iter()
+            .filter(|d| d.get("severity").and_then(|s| s.as_str()) == Some("critical"))
+            .count();
+        let error = diagnostics
+            .iter()
+            .filter(|d| d.get("severity").and_then(|s| s.as_str()) == Some("error"))
+            .count();
+        let warning = diagnostics
+            .iter()
+            .filter(|d| d.get("severity").and_then(|s| s.as_str()) == Some("warning"))
+            .count();
+        // Traci ran and produced a real severity distribution: confidence
+        // reflects how clean that distribution is, not merely that the
+        // tool executed. Weighted so critical findings (unreconstructable
+        // failure paths) dominate the penalty over stylistic warnings.
+        let penalty = (critical as f32) * 0.12 + (error as f32) * 0.02 + (warning as f32) * 0.005;
+        let confidence = (1.0 - penalty).clamp(0.15, 0.95);
+        let mut obs = Observation::new(
+            "traci",
+            ArtifactType::TraciTrace,
+            json!({
+                "kind": "live_check",
+                "diagnostic_count": diagnostics.len(),
+                "critical": critical,
+                "error": error,
+                "warning": warning,
+            }),
+        );
+        obs.confidence_hint = Some(confidence);
+        Some(vec![obs])
     }
 
     /// Dreamseq: semantic operational histories
@@ -209,8 +264,13 @@ impl Observer for CompositeObserver {
 
     async fn collect(&self) -> anyhow::Result<Vec<Observation>> {
         let mut all = Vec::new();
-        // Ecosystem (sync)
-        all.extend(ecosystem::all(&self.base_path));
+        // Ecosystem observers shell out to `traci`/`gh`; keep them off the
+        // async executor thread the same way GitObserver does.
+        let base = self.base_path.clone();
+        match tokio::task::spawn_blocking(move || ecosystem::all(&base)).await {
+            Ok(mut v) => all.append(&mut v),
+            Err(e) => tracing::warn!(error = %e, "ecosystem observer task panicked"),
+        }
         // Async observers
         for o in &self.observers {
             match o.collect().await {
@@ -291,7 +351,13 @@ mod tests {
         registry.register("failing", |_| Box::new(FailingObserver));
         let composite = registry.build(dir.path());
         assert_eq!(composite.name(), "composite");
-        assert!(composite.collect().await.unwrap().is_empty());
+        // A failing registered observer must not abort collection (its
+        // error is logged and skipped); the dummy contributes nothing.
+        // Ecosystem evidence (e.g. a live `traci` run) is intentionally
+        // not asserted empty here: on a host with traci installed, it's
+        // real, environment-dependent evidence, not an observer failure.
+        let observations = composite.collect().await.unwrap();
+        assert!(!observations.iter().any(|o| o.source == "failing"));
     }
 
     #[test]

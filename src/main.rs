@@ -11,6 +11,7 @@ use std::sync::Arc;
 
 mod cli_compliance;
 mod cli_fleet;
+mod cli_remote;
 mod cli_web;
 
 #[derive(Parser, Debug)]
@@ -78,6 +79,18 @@ enum Commands {
         apply: bool,
         #[arg(long)]
         json: bool,
+        /// Fork owner/repo, add traci-enforced ISO27001-A.8.15/A.8.16
+        /// evidence, and open a PR — instead of applying locally to
+        /// `--base`. Mutually exclusive with --apply.
+        #[arg(long, value_name = "OWNER/REPO")]
+        remote: Option<String>,
+        /// Branch name for the remote hardening PR (--remote only).
+        #[arg(long, requires = "remote")]
+        branch: Option<String>,
+        /// Where to clone the fork (--remote only). Defaults to a
+        /// process-scoped temp directory.
+        #[arg(long, requires = "remote")]
+        work_dir: Option<PathBuf>,
     },
     /// One-shot compliance check
     Check {
@@ -309,8 +322,46 @@ async fn __curly_original_main() -> anyhow::Result<()> {
         Commands::Recommend { json } => {
             cli_web::recommend(&cli.base, &config, json)?;
         }
-        Commands::Harden { apply, json } => {
-            cli_web::harden(&cli.base, &config, apply, json)?;
+        Commands::Harden {
+            apply,
+            json,
+            remote,
+            branch,
+            work_dir,
+        } => {
+            if let Some(remote) = remote {
+                let report = cli_remote::harden_remote(cli_remote::RemoteHardenArgs {
+                    remote,
+                    branch,
+                    work_dir,
+                })?;
+                if json {
+                    println!("{}", serde_json::to_string_pretty(&report)?);
+                } else {
+                    println!(
+                        "{}\n\n  {} {}/{}",
+                        style::banner(),
+                        style::bold("Remote hardening"),
+                        report.owner,
+                        report.repo
+                    );
+                    for f in &report.files_written {
+                        println!("  {} {}", style::green("+"), f);
+                    }
+                    println!("  {} {}", style::dim("branch"), report.branch);
+                    println!(
+                        "  {} {}",
+                        style::dim("committed"),
+                        if report.committed { "yes" } else { "no" }
+                    );
+                    match report.pr_url {
+                        Some(url) => println!("  {} {}", style::dim("pull request"), url),
+                        None => println!("  {} not opened (push failed)", style::dim("pull request")),
+                    }
+                }
+            } else {
+                cli_web::harden(&cli.base, &config, apply, json)?;
+            }
         }
         Commands::Check { json } => {
             if cli_compliance::check(&cli.base, &config, store.clone(), json).await? {

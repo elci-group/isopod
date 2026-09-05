@@ -21,7 +21,7 @@ pub struct Daemon {
 
 impl Daemon {
     pub fn new(config: Config, store: Arc<Store>) -> Self {
-        let controls = ControlSet::load_dir(&config.controls_dir);
+        let controls = ControlSet::load_dir_self_healing(&config.controls_dir);
         Self {
             config,
             store,
