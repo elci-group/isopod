@@ -13,6 +13,7 @@ mod cli_compliance;
 mod cli_fleet;
 mod cli_remote;
 mod cli_web;
+mod update;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -38,6 +39,8 @@ struct Cli {
 enum Commands {
     /// Initialize ~/.isopod directory and default controls
     Init,
+    /// Clone the latest isopod source and install it with `baby --user`
+    Update,
     /// Probe an explicitly authorised deployed web target
     Probe {
         #[arg(long)]
@@ -226,6 +229,9 @@ async fn __curly_original_main() -> anyhow::Result<()> {
         .init();
 
     let cli = Cli::parse();
+    if matches!(cli.command, Some(Commands::Update)) {
+        return update::run();
+    }
     let mut config = Config::load_or_default(cli.config);
     if let Some(controls) = cli.controls {
         config.controls_dir = controls;
@@ -756,6 +762,7 @@ async fn __curly_original_main() -> anyhow::Result<()> {
         } => {
             cli_fleet::run_daemon(roots, interval, depth, tick, dry_run).await;
         }
+        Commands::Update => unreachable!("handled before config/store setup"),
     }
 
     Ok(())
