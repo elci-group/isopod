@@ -39,8 +39,21 @@ struct Cli {
 enum Commands {
     /// Initialize ~/.isopod directory and default controls
     Init,
-    /// Clone the latest isopod source and install it with `baby --user`
-    Update,
+    /// Reconcile and verify the installed version through Theosis
+    Update {
+        #[arg(long, help = "Check for an update without installing it")]
+        check: bool,
+        #[arg(
+            long,
+            conflicts_with = "check",
+            help = "Bypass Theosis and use Baby directly"
+        )]
+        direct: bool,
+        #[arg(long = "ref", default_value = "master")]
+        reference: String,
+        #[arg(long)]
+        json: bool,
+    },
     /// Probe an explicitly authorised deployed web target
     Probe {
         #[arg(long)]
@@ -66,8 +79,14 @@ enum Commands {
         #[arg(long)]
         json: bool,
     },
-    /// Assess the web inventory using six-state assurance controls
+    /// Assess web assurance, or select compliance framework projections
     Assess {
+        #[arg(
+            long = "framework",
+            visible_alias = "frameworks",
+            value_delimiter = ','
+        )]
+        frameworks: Vec<String>,
         #[arg(long)]
         json: bool,
     },
@@ -229,8 +248,23 @@ async fn __curly_original_main() -> anyhow::Result<()> {
         .init();
 
     let cli = Cli::parse();
-    if matches!(cli.command, Some(Commands::Update)) {
-        return update::run();
+    if let Some(Commands::Update {
+        check,
+        direct,
+        reference,
+        json,
+    }) = &cli.command
+    {
+        return update::run(&update::UpdateRequest {
+            mode: if *check {
+                update::UpdateMode::Check
+            } else {
+                update::UpdateMode::Apply
+            },
+            reference: reference.clone(),
+            direct: *direct,
+            json: *json,
+        });
     }
     let mut config = Config::load_or_default(cli.config);
     if let Some(controls) = cli.controls {
@@ -322,8 +356,14 @@ async fn __curly_original_main() -> anyhow::Result<()> {
         Commands::Scan { json } => {
             cli_web::scan(&cli.base, &config, json)?;
         }
-        Commands::Assess { json } => {
-            cli_web::assess(&cli.base, &config, json)?;
+        Commands::Assess { frameworks, json } => {
+            if frameworks.is_empty() {
+                cli_web::assess(&cli.base, &config, json)?;
+            } else if cli_compliance::assess(&cli.base, &config, store.clone(), &frameworks, json)
+                .await?
+            {
+                std::process::exit(1);
+            }
         }
         Commands::Recommend { json } => {
             cli_web::recommend(&cli.base, &config, json)?;
@@ -362,7 +402,9 @@ async fn __curly_original_main() -> anyhow::Result<()> {
                     );
                     match report.pr_url {
                         Some(url) => println!("  {} {}", style::dim("pull request"), url),
-                        None => println!("  {} not opened (push failed)", style::dim("pull request")),
+                        None => {
+                            println!("  {} not opened (push failed)", style::dim("pull request"))
+                        }
                     }
                 }
             } else {
@@ -762,7 +804,7 @@ async fn __curly_original_main() -> anyhow::Result<()> {
         } => {
             cli_fleet::run_daemon(roots, interval, depth, tick, dry_run).await;
         }
-        Commands::Update => unreachable!("handled before config/store setup"),
+        Commands::Update { .. } => unreachable!("handled before config/store setup"),
     }
 
     Ok(())
@@ -851,4 +893,54 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::process::exit(1);
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn assess_accepts_singular_and_plural_framework_flags() {
+        for flag in ["--framework", "--frameworks"] {
+            let cli = Cli::try_parse_from(["isopod", "assess", flag, "fort,iso27001", "--json"])
+                .expect("assessment arguments should parse");
+            match cli.command {
+                Some(Commands::Assess { frameworks, json }) => {
+                    assert_eq!(frameworks, ["fort", "iso27001"]);
+                    assert!(json);
+                }
+                _ => unreachable!("assessment command expected"),
+            }
+        }
+    }
+
+    #[test]
+    fn update_exposes_theosis_check_and_direct_modes() {
+        let default = Cli::try_parse_from(["isopod", "update"])
+            .expect("default Theosis update arguments should parse");
+        assert!(matches!(
+            default.command,
+            Some(Commands::Update { reference, .. }) if reference == "master"
+        ));
+
+        let cli =
+            Cli::try_parse_from(["isopod", "update", "--check", "--ref", "release", "--json"])
+                .expect("Theosis check arguments should parse");
+        match cli.command {
+            Some(Commands::Update {
+                check,
+                direct,
+                reference,
+                json,
+            }) => {
+                assert!(check);
+                assert!(!direct);
+                assert_eq!(reference, "release");
+                assert!(json);
+            }
+            _ => unreachable!("update command expected"),
+        }
+
+        assert!(Cli::try_parse_from(["isopod", "update", "--check", "--direct"]).is_err());
+    }
 }

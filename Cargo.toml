@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 [package]
 name = "isopod"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 rust-version = "1.74"
 description = "Evidence-first web assurance, compliance, and hardening system"

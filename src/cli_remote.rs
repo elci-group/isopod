@@ -105,9 +105,7 @@ pub fn harden_remote(args: RemoteHardenArgs) -> Result<RemoteHardenReport> {
     checkout_branch(&work_dir, &branch)?;
     let files_written = apply_traci_hardening(&work_dir)?;
     if files_written.is_empty() {
-        bail!(
-            "nothing to harden: {owner}/{repo} already has traci.toml and a traci CI workflow"
-        );
+        bail!("nothing to harden: {owner}/{repo} already has traci.toml and a traci CI workflow");
     }
     let committed = governed_commit(&work_dir, owner, repo)?;
     let pushed = committed && push_branch(&work_dir, &branch)?;
@@ -141,7 +139,13 @@ fn fork_and_clone(owner: &str, repo: &str, work_dir: &Path) -> Result<()> {
     }
     run(
         Command::new("gh")
-            .args(["repo", "fork", &format!("{owner}/{repo}"), "--clone", "--remote"])
+            .args([
+                "repo",
+                "fork",
+                &format!("{owner}/{repo}"),
+                "--clone",
+                "--remote",
+            ])
             .arg("--")
             .arg(work_dir),
         "gh repo fork",
@@ -190,9 +194,11 @@ fn apply_traci_hardening(project: &Path) -> Result<Vec<String>> {
 /// shouldn't be blocked on the target having adopted kaptaind.
 fn governed_commit(work_dir: &Path, owner: &str, repo: &str) -> Result<bool> {
     run(
-        Command::new("git")
-            .current_dir(work_dir)
-            .args(["add", "traci.toml", ".github/workflows/traci.yml"]),
+        Command::new("git").current_dir(work_dir).args([
+            "add",
+            "traci.toml",
+            ".github/workflows/traci.yml",
+        ]),
         "git add",
     )?;
 
@@ -221,7 +227,7 @@ fn governed_commit(work_dir: &Path, owner: &str, repo: &str) -> Result<bool> {
         Command::new("git").current_dir(work_dir).args([
             "commit",
             "-m",
-            &format!("isopod harden: add traci-enforced ISO27001-A.8.15/A.8.16 logging & monitoring evidence"),
+            "isopod harden: add traci-enforced ISO27001-A.8.15/A.8.16 logging & monitoring evidence",
         ]),
         "git commit",
     )
@@ -300,7 +306,10 @@ mod tests {
         let written = apply_traci_hardening(dir.path()).unwrap();
         assert_eq!(
             written,
-            vec!["traci.toml".to_string(), ".github/workflows/traci.yml".to_string()]
+            vec![
+                "traci.toml".to_string(),
+                ".github/workflows/traci.yml".to_string()
+            ]
         );
         assert!(dir.path().join("traci.toml").exists());
         assert!(dir.path().join(".github/workflows/traci.yml").exists());

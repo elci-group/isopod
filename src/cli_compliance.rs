@@ -10,6 +10,7 @@ use isopod::{
     store::Store,
     style,
 };
+use std::collections::BTreeSet;
 use std::io::Write;
 use std::time::Duration;
 use std::{path::Path, sync::Arc};
@@ -39,6 +40,33 @@ fn animate_compliance_posture(score: f32) {
 
 pub async fn check(base: &Path, config: &Config, store: Arc<Store>, json: bool) -> Result<bool> {
     let results = Daemon::new(config.clone(), store).tick(base).await?;
+    output_results(&results, json)?;
+    Ok(has_failures(&results))
+}
+
+pub async fn assess(
+    base: &Path,
+    config: &Config,
+    store: Arc<Store>,
+    frameworks: &[String],
+    json: bool,
+) -> Result<bool> {
+    let selected = frameworks
+        .iter()
+        .map(|framework| isopod::assurance::canonical_framework_id(framework).to_owned())
+        .collect::<BTreeSet<_>>();
+    let results = Daemon::new(config.clone(), store)
+        .tick(base)
+        .await?
+        .into_iter()
+        .filter(|result| selected.contains(&result.framework))
+        .collect::<Vec<_>>();
+    if results.is_empty() {
+        anyhow::bail!(
+            "none of the selected frameworks are installed: {}",
+            selected.into_iter().collect::<Vec<_>>().join(", ")
+        );
+    }
     output_results(&results, json)?;
     Ok(has_failures(&results))
 }
@@ -186,9 +214,16 @@ fn render(results: &[ControlResult]) {
     if !frameworks.is_empty() {
         println!("\n  {}", style::bold("Framework coverage"));
         for framework in frameworks {
+            let posture = framework
+                .score
+                .map_or_else(|| "ungraded".to_owned(), |score| format!("{score}%"));
             println!(
-                "    {:<18} {:>2}/{:<2}  {}%",
-                framework.framework, framework.passing, framework.total, framework.score
+                "    {:<18} assessed {:>2}/{:<2}  coverage {:>3}%  posture {}",
+                framework.framework,
+                framework.assessed,
+                framework.total,
+                framework.coverage,
+                posture
             );
         }
     }

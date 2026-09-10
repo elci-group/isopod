@@ -14,9 +14,22 @@ required = true
 forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
 
 [[file]]
+path = "src/assurance.rs"
+required = true
+min_size_bytes = 1000
+forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
+require_regex = ["EvidenceClaim", "AssuranceControlState", "detect_contradictions", "calculate_posture"]
+
+[[file]]
 path = "src/main.rs"
 required = true
 forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
+
+[[file]]
+path = "src/update.rs"
+required = true
+forbid_regex = ["TODO", "FIXME", "unimplemented!", "panic!"]
+require_regex = ["Command::new\\(\"theosis\"\\)", "UpdateMode::Check", "theosis_status_is_success"]
 
 [[file]]
 path = "README.md"

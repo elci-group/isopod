@@ -808,7 +808,10 @@ mod tests {
                 .find(|c| c.id == id)
                 .map(|c| c.current_state.clone())
         };
-        assert_eq!(state_of("WEB-HTTP-001"), Some(AssuranceState::NotApplicable));
+        assert_eq!(
+            state_of("WEB-HTTP-001"),
+            Some(AssuranceState::NotApplicable)
+        );
         assert_eq!(
             state_of("WEB-RUNTIME-001"),
             Some(AssuranceState::NotApplicable)

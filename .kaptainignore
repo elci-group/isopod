@@ -1,6 +1,7 @@
 # Common
 .git
 .kaptaind
+.brandi/
 .DS_Store
 *.swp
 *.swo

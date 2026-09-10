@@ -33,6 +33,7 @@
 //! sidecar files for tamper detection.
 
 pub mod api;
+pub mod assurance;
 pub mod config;
 pub mod control;
 pub mod daemon;
@@ -52,6 +53,10 @@ pub mod style;
 pub mod web_assurance;
 pub mod webhook;
 
+pub use assurance::{
+    AssuranceControlState, CanonicalControl, ControlAssessment, EvidenceClaim,
+    EvidenceClassification, EvidenceLevel, FrameworkManifest, PostureReport, RequirementMapping,
+};
 pub use config::Config;
 pub use control::{Control, ControlResult, ControlSet, ControlStatus};
 pub use evidence::{ArtifactType, Evidence, EvidenceStore};

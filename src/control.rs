@@ -72,11 +72,15 @@ pub struct ControlResult {
 pub struct FrameworkSummary {
     pub framework: String,
     pub total: usize,
+    pub assessed: usize,
     pub passing: usize,
     pub failing: usize,
     pub warning: usize,
     pub unknown: usize,
-    pub score: u8,
+    /// Posture among assessed controls. `None` means the framework is ungraded.
+    pub score: Option<u8>,
+    /// Percentage of in-scope controls with an explicit assessment result.
+    pub coverage: u8,
 }
 
 /// Aggregate control results by framework.
@@ -96,19 +100,24 @@ pub fn framework_summary(results: &[ControlResult]) -> Vec<FrameworkSummary> {
         .into_iter()
         .map(|(framework, (passing, failing, warning, unknown))| {
             let total = passing + failing + warning + unknown;
-            let score = if total > 0 {
-                (passing as f32 / total as f32 * 100.0).round() as u8
+            let assessed = passing + failing + warning;
+            let score =
+                (assessed > 0).then(|| (passing as f32 / assessed as f32 * 100.0).round() as u8);
+            let coverage = if total > 0 {
+                (assessed as f32 / total as f32 * 100.0).round() as u8
             } else {
                 0
             };
             FrameworkSummary {
                 framework,
                 total,
+                assessed,
                 passing,
                 failing,
                 warning,
                 unknown,
                 score,
+                coverage,
             }
         })
         .collect();
@@ -604,9 +613,30 @@ controls: []
         assert_eq!(summary.len(), 2);
         let iso27001 = summary.iter().find(|s| s.framework == "iso27001").unwrap();
         assert_eq!(iso27001.passing, 1);
-        assert_eq!(iso27001.score, 100);
+        assert_eq!(iso27001.score, Some(100));
+        assert_eq!(iso27001.coverage, 100);
         let iso27002 = summary.iter().find(|s| s.framework == "iso27002").unwrap();
         assert_eq!(iso27002.failing, 1);
-        assert_eq!(iso27002.score, 0);
+        assert_eq!(iso27002.score, Some(0));
+        assert_eq!(iso27002.coverage, 100);
+    }
+
+    #[test]
+    fn unknown_only_framework_is_ungraded() {
+        let results = vec![ControlResult {
+            id: "C1".to_string(),
+            title: "Unknown".to_string(),
+            framework: "soc2".to_string(),
+            status: ControlStatus::Unknown,
+            evidence_count: 0,
+            confidence: 0.0,
+            last_checked: Utc::now(),
+            reason: None,
+            remediation: None,
+        }];
+        let summary = framework_summary(&results);
+        assert_eq!(summary[0].score, None);
+        assert_eq!(summary[0].coverage, 0);
+        assert_eq!(summary[0].unknown, 1);
     }
 }

@@ -141,6 +141,7 @@ GET /drift       → {drifts[]}
 | Command | Purpose | Stylised? |
 |---|---|---|
 | `isopod init` | Seed `~/.isopod` and default control packs | `✓` banner + counts |
+| `isopod update [--check] [--ref master] [--json]` | Reconcile, install, and verify updates through Theosis; `--check` is scheduler-safe | yes |
 | `isopod scan [--json]` | Inventory framework, dependencies, CI, and deployment evidence | yes |
 | `isopod assess [--json]` | Evaluate web controls with six explicit assurance states | yes |
 | `isopod recommend [--json]` | Produce a leverage-ranked remediation plan | yes |
