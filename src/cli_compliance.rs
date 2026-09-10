@@ -1,7 +1,6 @@
 // Copyright (c) 2026 sal
 // SPDX-License-Identifier: MIT
 use anyhow::Result;
-use form3::IsopodCrawl;
 use isopod::{
     config::Config,
     control::{self, ControlResult, ControlStatus},
@@ -25,17 +24,27 @@ fn animate_compliance_posture(score: f32) {
     if !style::animations_enabled() {
         return;
     }
-    let crawl = IsopodCrawl::new(POSTURE_TRACK_WIDTH);
     let target = (score / 100.0).clamp(0.0, 1.0);
     let mut stdout = std::io::stdout();
     for tick in 0..=POSTURE_CRAWL_FRAMES {
         let progress = target * tick as f32 / POSTURE_CRAWL_FRAMES as f32;
-        let _ = write!(stdout, "\r  {}", crawl.render(progress, tick));
+        let _ = write!(stdout, "\r  {}", render_isopod_crawl(progress));
         let _ = stdout.flush();
         std::thread::sleep(Duration::from_millis(28));
     }
     let _ = write!(stdout, "\r\x1b[2K");
     let _ = stdout.flush();
+}
+
+fn render_isopod_crawl(progress: f32) -> String {
+    let position = (progress * POSTURE_TRACK_WIDTH as f32)
+        .round()
+        .clamp(0.0, POSTURE_TRACK_WIDTH as f32) as usize;
+    format!(
+        "{}🐛{}",
+        "·".repeat(position),
+        "·".repeat(POSTURE_TRACK_WIDTH.saturating_sub(position))
+    )
 }
 
 pub async fn check(base: &Path, config: &Config, store: Arc<Store>, json: bool) -> Result<bool> {
@@ -246,6 +255,16 @@ mod tests {
             reason: Some("reason".into()),
             remediation: Some("fix".into()),
         }
+    }
+
+    #[test]
+    fn local_isopod_crawl_is_bounded() {
+        assert_eq!(render_isopod_crawl(-1.0).matches('·').count(), 32);
+        assert_eq!(
+            render_isopod_crawl(0.5),
+            "·".repeat(16) + "🐛" + &"·".repeat(16)
+        );
+        assert_eq!(render_isopod_crawl(2.0).matches('·').count(), 32);
     }
 
     #[test]

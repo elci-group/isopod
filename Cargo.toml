@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 [package]
 name = "isopod"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 rust-version = "1.74"
 description = "Evidence-first web assurance, compliance, and hardening system"
@@ -40,7 +40,6 @@ async-trait = "0.1"
 axum = { version = "0.7", features = ["json"] }
 dirs = "5.0"
 walkdir = "2.5"
-form3 = { path = "../3form" }
 
 [dev-dependencies]
 tempfile = "3.10"
